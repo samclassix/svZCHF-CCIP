@@ -13,7 +13,7 @@ contract CCIPWrapper is CCIPReceiver {
     ERC4626 public immutable svZCHF;
     IERC20 public immutable zCHF;
 
-    event Wrapped(address indexed recipient, uint256 amount);
+    event Wrapped(address indexed recipient, uint256 amount, uint256 shares);
 
     error InvalidRecipient();
     error InvalidToken();
@@ -44,8 +44,8 @@ contract CCIPWrapper is CCIPReceiver {
         address recipient = abi.decode(any2EvmMessage.data, (address));
         if (recipient == address(0)) revert InvalidRecipient();
 
-        svZCHF.deposit(amount, recipient);
+        uint256 shares = svZCHF.deposit(amount, recipient);
 
-        emit Wrapped(recipient, amount);
+        emit Wrapped(recipient, amount, shares);
     }
 }
